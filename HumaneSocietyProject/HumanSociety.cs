@@ -106,6 +106,7 @@ namespace HumaneSocietyProject
             adopter.AdopterUserName = userName;
             adopter.AdopterPassword = password;
 
+            database.Adopters.InsertOnSubmit(adopter);
             database.SubmitChanges();
 
             Console.Clear();
@@ -141,7 +142,7 @@ namespace HumaneSocietyProject
         {
             var user = database.Adopters.Select(x => x.AdopterUserName == userName).ToString();
             
-            if(user != null)
+            if(user == null)
             {
                 Console.WriteLine("There is someone with this name;");
                 GetNewUserName();
@@ -215,6 +216,7 @@ namespace HumaneSocietyProject
             {
                 Console.WriteLine($"First Name: {person.FirstName} \n Last Name: {person.LastName} \n Address: {person.StreetAddress} \n City: {person.City} \n State: {person.State} \n Zip: {person.Zip} \n Phone: {person.Phone} \n DOB: {person.DOB}");
             }
+            Console.ReadLine();
         }
 
         public void GetEmployee()
