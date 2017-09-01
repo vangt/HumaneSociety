@@ -11,6 +11,7 @@ namespace HumaneSocietyProject
         static void Main(string[] args)
         {
             HumanSociety humaneSociety = new HumanSociety();
+            humaneSociety.UserType();
         }
     }
 }

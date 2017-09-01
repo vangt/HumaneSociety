@@ -85,11 +85,38 @@ namespace HumaneSocietyProject
             Console.WriteLine("Please enter your date of birth.");
             string dob = Console.ReadLine();
 
-            Console.WriteLine("Please enter your Username.");
-            string userName = Console.ReadLine();
+            string userName = GetNewUserName();
 
-            Console.WriteLine("Please enter your password.");
+            Console.WriteLine("Please enter a password.");
             string password = Console.ReadLine();
+
+            StoreNewUser(firstName, lastName, streetAddress, city, state, zip, phone, dob, userName, password);
+        }
+
+        public void StoreNewUser(string firstName, string lastName, string street, string city, string state, string zip, string phone, string dob, string userName, string password)
+        {
+
+        }
+
+        public string GetNewUserName()
+        {
+            Console.WriteLine("Please enter a Username.");
+            string userName = Console.ReadLine();
+            userName = UserNameCheck(userName);
+            return userName;
+        }
+
+        public string UserNameCheck(string userName)
+        {
+            var user = database.Adopters.Select(x => x.AdopterUserName == userName).ToString();
+            
+            if(user != null)
+            {
+                Console.WriteLine("There is someone with this name;");
+                GetNewUserName();
+            }
+
+            return userName;
         }
 
         public void GetAdopteeLogin()
