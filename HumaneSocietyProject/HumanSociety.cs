@@ -53,7 +53,8 @@ namespace HumaneSocietyProject
                     GetAdopteeLogin();
                     break;
                 default:
-                    Console.WriteLine("You choose ");
+                    Console.WriteLine("You did not choose 1 or 2.");
+                    GetCheckAdoptee();
                     break;
             }
         }
@@ -81,8 +82,7 @@ namespace HumaneSocietyProject
             Console.WriteLine("Please enter your phone.");
             string phone = Console.ReadLine();
 
-            Console.WriteLine("Please enter your date of birth.");
-            string dob = Console.ReadLine();
+            DateTime dob = DateOfBirth();
 
             string userName = GetNewUserName();
 
@@ -92,7 +92,7 @@ namespace HumaneSocietyProject
             StoreNewUser(firstName, lastName, streetAddress, city, state, zip, phone, dob, userName, password);
         }
 
-        public void StoreNewUser(string firstName, string lastName, string street, string city, string state, string zip, string phone, string dob, string userName, string password)
+        public void StoreNewUser(string firstName, string lastName, string street, string city, string state, string zip, string phone, DateTime dob, string userName, string password)
         {
             Adopter adopter = new Adopter();
             adopter.FirstName = firstName;
@@ -108,6 +108,25 @@ namespace HumaneSocietyProject
 
             database.SubmitChanges();
 
+            Console.Clear();
+            GetAdopteeLogin();
+        }
+
+        public DateTime DateOfBirth()
+        {
+            DateTime dateTime = new DateTime();
+            Console.WriteLine("Please enter your date of birth. \"yyyy/mm/dd\" ");
+            string dob = Console.ReadLine();
+            try
+            {
+                dateTime = DateTime.Parse(dob);
+            }
+            catch(FormatException)
+            {
+                Console.WriteLine("You've enter the wrong format or illegal charcters.  Please use the \"yyyy/mm/dd\" with \"/\".");
+                DateOfBirth();
+            }
+            return dateTime;
         }
 
         public string GetNewUserName()
@@ -138,6 +157,64 @@ namespace HumaneSocietyProject
 
             Console.WriteLine("Please enter your password.");
             string password = Console.ReadLine();
+
+            CheckAdopteeLoginCredits(userName, password);
+        }
+
+        public void CheckAdopteeLoginCredits(string userName, string password)
+        {
+            var adoptee = from person in database.Adopters
+                    where person.AdopterUserName == userName && person.AdopterPassword == password
+                    select person;
+            
+            if(adoptee != null)
+            {
+                GetUserMenu(userName);
+            }
+            else
+            {
+                Console.WriteLine("User was not found or password was incorrect.");
+                Console.ReadLine();
+                Console.Clear();
+                GetAdopteeLogin();
+            }
+        }
+
+        public void GetUserMenu(string userName)
+        {
+            Console.WriteLine("Please choose: \n 1: User Information \n 2: Find Animal \n 3: Logout");
+            string choice = Console.ReadLine();
+
+            switch(choice)
+            {
+                case "1":
+                    DisplayUserInformation(userName);
+                    break;
+                case "2":
+                    break;
+                case "3":
+                    Console.WriteLine("Thank you for visiting the Humane Society.  Goodbye.");
+                    Console.ReadLine();
+                    Environment.Exit(0);
+                    break;
+                default:
+                    Console.WriteLine("You have entered an invalid selection.");
+                    Console.ReadLine();
+                    GetUserMenu(userName);
+                    break;
+            }
+        }
+
+        public void DisplayUserInformation(string userName)
+        {
+            var user = from person in database.Adopters
+                       where person.AdopterUserName == userName
+                       select person;
+
+            foreach(Adopter person in user)
+            {
+                Console.WriteLine($"First Name: {person.FirstName} \n Last Name: {person.LastName} \n Address: {person.StreetAddress} \n City: {person.City} \n State: {person.State} \n Zip: {person.Zip} \n Phone: {person.Phone} \n DOB: {person.DOB}");
+            }
         }
 
         public void GetEmployee()
