@@ -8,11 +8,10 @@ namespace HumaneSocietyProject
 {
     public class HumanSociety
     {
-        DataClasses1DataContext database;
+        DataClasses1DataContext database = new DataClasses1DataContext();
 
         public HumanSociety()
         {
-            database = new DataClasses1DataContext();
         }
 
         public void UserType()
@@ -95,6 +94,19 @@ namespace HumaneSocietyProject
 
         public void StoreNewUser(string firstName, string lastName, string street, string city, string state, string zip, string phone, string dob, string userName, string password)
         {
+            Adopter adopter = new Adopter();
+            adopter.FirstName = firstName;
+            adopter.LastName = lastName;
+            adopter.StreetAddress = street;
+            adopter.City = city;
+            adopter.State = state;
+            adopter.Zip = zip;
+            adopter.Phone = phone;
+            adopter.DOB = dob;
+            adopter.AdopterUserName = userName;
+            adopter.AdopterPassword = password;
+
+            database.SubmitChanges();
 
         }
 
