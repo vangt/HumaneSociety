@@ -689,11 +689,11 @@ namespace HumaneSocietyProject
         {
             int animalId = id;
 
-            var animalType = from animal in database.AnimalTypes
-                             where animal.AnimalTypeID == animalId
+            var animals = from animal in database.Animals
+                             where animal.AnimalID == animalId
                              select animal;
 
-            if(animalType == null)
+            if(animals == null)
             {
                 Console.WriteLine("The ID you entered was not found.");
                 Console.ReadLine();
