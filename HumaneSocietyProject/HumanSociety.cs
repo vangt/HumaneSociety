@@ -324,11 +324,15 @@ namespace HumaneSocietyProject
                     break;
                 case "4":
                     Console.Clear();
-                    CollectMoney()
+                    CollectMoney(employee);
                     break;
                 case "5":
+                    Console.Clear();
+                    GetAdoptedStatus(employee);
                     break;
                 case "6":
+                    Console.Clear();
+                    GetRoomList();
                     break;
                 case "7":
                     Console.Clear();
@@ -994,6 +998,7 @@ namespace HumaneSocietyProject
                 GetAnimal(employee, adopterID);
             }
 
+            animalID = VerifyAnimalID(animalID);
             GetPrice(employee, adopterID, animalID);
         }
 
@@ -1105,6 +1110,52 @@ namespace HumaneSocietyProject
                     DeniedProcess(employee, adopterID, animalID, price);
                     break;
             }
+        }
+
+        public void GetAdoptedStatus(string employee)
+        {
+            int animalID = 0;
+            Console.WriteLine("What is the ID of the animal you wish to check on.");
+            ListOfAnimals();
+
+            try
+            {
+                animalID = int.Parse(Console.ReadLine());
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("You have an invalid entry.");
+                Console.ReadLine();
+                Console.Clear();
+                GetAdoptedStatus(employee);
+            }
+
+            animalID = VerifyAnimalID(animalID);
+            CheckStatus(employee, animalID);
+        }
+
+        public void CheckStatus(string employee, int animalID)
+        {
+            var animals = from animal in database.Animals
+                          where animal.AnimalID == animalID
+                          select animal;
+
+            foreach(Animal animal in animals)
+            {
+                if(animal.Adopted == false)
+                {
+                    Console.WriteLine($"{animal.Name} has not been adopted yet.");
+                }
+                else
+                {
+                    Console.WriteLine($"{animal.Name} is already adopted.");
+                }
+            }
+
+            Console.WriteLine("Please press enter to return to the main menu.");
+            Console.ReadLine();
+            Console.Clear();
+            GetEmployeeMenu(employee);
         }
 
         public void ListOfAnimals()
