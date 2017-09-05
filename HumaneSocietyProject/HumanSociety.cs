@@ -956,9 +956,155 @@ namespace HumaneSocietyProject
 
         public void CollectMoney(string employee)
         {
+            int adopterID = 0;
             Console.WriteLine("Which adopter ID is adopting a new animal?");
+            ListOfAdopters();
 
+            try
+            {
+                adopterID = int.Parse(Console.ReadLine());
+            }
+            catch(FormatException)
+            {
+                Console.WriteLine("You have an invalid entry.");
+                Console.ReadLine();
+                Console.Clear();
+                CollectMoney(employee);
+            }
 
+            adopterID = VerifyID(adopterID);
+            GetAnimal(employee, adopterID);
+        }
+
+        public void GetAnimal(string employee, int adopterID)
+        {
+            int animalID = 0;
+            Console.WriteLine("Which animal ID belongs to the animal that is being adopted?");
+            ListOfAnimals();
+            
+            try
+            {
+                animalID = int.Parse(Console.ReadLine());
+            }
+            catch(FormatException)
+            {
+                Console.WriteLine("You have an invalid entry.");
+                Console.ReadLine();
+                Console.Clear();
+                GetAnimal(employee, adopterID);
+            }
+
+            GetPrice(employee, adopterID, animalID);
+        }
+
+        public void GetPrice(string employee, int adopterID, int animalID)
+        {
+            int price = 0;
+            var animals = from animal in database.Animals
+                        where animal.AnimalID == animalID
+                        select animal;
+
+            foreach(Animal animal in animals)
+            {
+                price = animal.Price.Value;
+            }
+
+            Console.WriteLine($"The price of the animal is ${price}.");
+            Console.ReadLine();
+
+            PayForAnimal(employee, adopterID, animalID, price);
+        }
+
+        public void PayForAnimal(string employee, int adopterID, int animalID, int price)
+        {
+            int payment = 0;
+            Console.WriteLine("How much is the adoptee paying?");
+
+            try
+            {
+                payment = int.Parse(Console.ReadLine());
+            }
+            catch(FormatException)
+            {
+                Console.WriteLine("Invalid input.");
+                Console.ReadLine();
+                PayForAnimal(employee, adopterID, animalID, price);
+            }
+
+            if(payment > price)
+            {
+                int change = payment - price;
+                Console.WriteLine($"The change will be {change}.");
+                PaymentProcess(employee, adopterID, animalID, price);
+            }
+            else if(payment < price)
+            {
+                DeniedProcess(employee, adopterID, animalID, price);
+            }
+            else if(payment == price)
+            {
+                Console.WriteLine("Congratulations to the new pet owner.");
+                PaymentProcess(employee, adopterID, animalID, price);
+            }
+        }
+
+        public void PaymentProcess(string employee, int adopterID, int animalID, int price)
+        {
+            Payment payment = new Payment();
+            Animal animal = new Animal();
+            DateTime dateTime = DateTime.Today;
+            payment.AmountPaid = price;
+            payment.AnimalID = animalID;
+            payment.DatePaid = dateTime;
+            ChangeAdoptionStatus(adopterID, animalID);
+
+            database.Payments.InsertOnSubmit(payment);
+            database.SubmitChanges();
+
+            Console.WriteLine("Please press enter to proceed back to the main menu.");
+            Console.ReadLine();
+            Console.Clear();
+            GetEmployeeMenu(employee);
+        }
+
+        public void ChangeAdoptionStatus(int adopterId, int animalID)
+        {
+            var animals = from animal in database.Animals
+                         where animal.AnimalID == animalID
+                         select animal;
+             
+            foreach(Animal animal in animals)
+            {
+                animal.Adopted = true;
+                animal.AdopterID = adopterId;
+
+                database.Animals.InsertOnSubmit(animal);
+                database.SubmitChanges();
+            }
+        }
+
+        public void DeniedProcess(string employee, int adopterID, int animalID, int price)
+        {
+            Console.WriteLine("This is not enough for this animal. Does the adopter wish to change the amount, yes or no?");
+            string choice = Console.ReadLine();
+
+            switch(choice)
+            {
+                case "yes":
+                    PayForAnimal(employee, adopterID, animalID, price);
+                    break;
+                case "no":
+                    Console.WriteLine("Please press enter to go back to the main screen.");
+                    Console.ReadLine();
+                    Console.Clear();
+                    GetEmployeeMenu(employee);
+                    break;
+                default:
+                    Console.WriteLine("You did not input a valid option.");
+                    Console.ReadLine();
+                    DeniedProcess(employee, adopterID, animalID, price);
+                    break;
+            }
         }
 
         public void ListOfAnimals()
