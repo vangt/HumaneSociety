@@ -319,6 +319,8 @@ namespace HumaneSocietyProject
                     GetShotMenu(employee);
                     break;
                 case "3":
+                    Console.Clear();
+                    GetFoodMenu();
                     break;
                 case "4":
                     break;
@@ -843,6 +845,61 @@ namespace HumaneSocietyProject
             GetEmployeeMenu(employee);
         }
 
+        public void GetFoodMenu(string employee)
+        {
+            int id = 0;
+            Console.WriteLine("Here is a list of the type of animals.  Please choose the ID of the animal you plan to feed.");
+            ListAnimalTypes();
+            
+            try
+            {
+                id = int.Parse(Console.ReadLine());
+            }
+            catch(FormatException)
+            {
+                Console.WriteLine("Your input was not valid.");
+                Console.ReadLine();
+                Console.Clear();
+                GetFoodMenu(employee);
+            }
+
+            id = VerifyTypeID(employee, id);
+
+            GetFoodAmount(employee, id);
+        }
+
+        public int VerifyTypeID(string employee, int id)
+        {
+            int typeID = id;
+
+            var type = from types in database.AnimalTypes
+                       where types.AnimalTypeID == typeID
+                       select types;
+
+            if(type == null)
+            {
+                Console.WriteLine("The type you selected was not found.");
+                Console.ReadLine();
+                Console.Clear();
+                GetFoodMenu(employee);
+            }
+            else
+            {
+                typeID = id;
+            }
+
+            return typeID;
+        }
+
+        public void GetFoodAmount(string employee, int id)
+        {
+            var animalyType = from types in database.AnimalTypes
+                              where types.AnimalTypeID == id
+                              select types;
+
+            foreach(AnimalType )
+        }
+
         public void ListOfAnimals()
         {
             var animal = from animals in database.Animals
@@ -851,6 +908,17 @@ namespace HumaneSocietyProject
             foreach(Animal animals in animal)
             {
                 Console.WriteLine($"Name: {animals.Name} \t ID: {animals.AnimalID}");
+            }
+        }
+
+        public void ListAnimalTypes()
+        {
+            var animalType = from types in database.AnimalTypes
+                             select types;
+
+            foreach(AnimalType type in animalType)
+            {
+                Console.WriteLine($"Type: {type.TypeOfAnimal} \t ID: {type.AnimalTypeID}");
             }
         }
     }
