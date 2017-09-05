@@ -241,6 +241,7 @@ namespace HumaneSocietyProject
                 FindAnimal(userName);
             }
 
+            type = VerifyTypeID(userName, type);
             GetColor(userName, type);
         }
 
@@ -265,7 +266,39 @@ namespace HumaneSocietyProject
 
         public void GetUserPrice(string userName, int type, int colorID)
         {
-            //TODO
+            int price = 0;
+            Console.WriteLine("What is the price limit?  Please enter a number. (Do not include \"$\").");
+            
+            try
+            {
+                price = int.Parse(Console.ReadLine());
+            }
+            catch(FormatException)
+            {
+                Console.WriteLine("You have an invalid entry.");
+                Console.ReadLine();
+                GetUserPrice(userName, type, colorID);
+            }
+
+            LookForAnimal(userName, type, colorID, price);
+        }
+
+        public void LookForAnimal(string userName, int type, int colorID, int price)
+        {
+            var animals = from animal in database.Animals
+                          where animal.AnimalTypeID == type && animal.ColorID == colorID && animal.Price < price
+                          select animal;
+
+            Console.WriteLine("Here is a list of animals you might like. If you have any questions about purchasing an animal please contact an employee.");
+
+            foreach(Animal animal in animals)
+            {
+                Console.WriteLine($"Name: {animal.Name} \t Price: {animal.Price}");
+            }
+
+            Console.WriteLine("Please press enter to return the the user menu.");
+            Console.ReadLine();
+            GetUserMenu(userName);
         }
 
         public void GetEmployee()
