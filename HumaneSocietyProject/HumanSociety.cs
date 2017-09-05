@@ -361,6 +361,55 @@ namespace HumaneSocietyProject
             int room = GetRoom();
 
             int color = GetAnimalColor();
+
+            int gender = GetGender();
+
+            AdmitAnimal(employee, animalName, vaccinated, age, price, adopted, adopter, animalType, room, color, gender);
+        }
+
+        public void AdmitAnimal(string employee, string name, bool vaccinated, int age, int price, bool adopted, int adopterID, int animalTypeID, int room, int color, int gender)
+        {
+            Animal animal = new Animal();
+            Room rooms = new Room();
+
+            animal.Name = name;
+            animal.Vaccinated = vaccinated;
+            animal.Age = age;
+            animal.Price = price;
+            animal.Adopted = adopted;
+            animal.AdopterID = adopterID;
+            animal.AnimalTypeID = animalTypeID;
+            rooms.RoomNumber = room;
+            animal.RoomID = GetRoomID(room);
+            animal.ColorID = color;
+            animal.GenderID = gender;
+
+            database.Rooms.InsertOnSubmit(rooms);
+            database.Animals.InsertOnSubmit(animal);
+            database.SubmitChanges();
+
+            Console.WriteLine("The animal as been added to the database. \n Press enter to return to the menu.");
+            Console.ReadLine();
+            Console.Clear();
+            GetEmployeeMenu(employee);
+
+        }
+
+        public int GetRoomID(int room)
+        {
+            int roomNumberID = 0;
+
+            var roomID = from rooms in database.Rooms
+                         where rooms.RoomNumber == room
+                         select rooms;
+
+            foreach(Room id in roomID)
+            {
+                roomNumberID = id.RoomID;
+            }
+
+            return roomNumberID;
+            
         }
 
         public bool CheckVaccinated()
@@ -629,7 +678,7 @@ namespace HumaneSocietyProject
         {
             int color = 0;
 
-            Console.WriteLine("Here is a list of colors.  Please choose an ID of the color.");
+            Console.WriteLine("Here is a list of colors.  Please choose an ID of the color that matches closest to the animals color.");
 
             var colorTypes = from colors in database.Colors
                         select colors;
@@ -678,6 +727,31 @@ namespace HumaneSocietyProject
             }
 
             return colorID;
+        }
+
+        public int GetGender()
+        {
+            int gender = 0;
+            Console.WriteLine("Please select the gender: \n 1: Male \n 2: Female");
+            string choice = Console.ReadLine();
+            
+            switch(choice)
+            {
+                case "1":
+                    gender = 1;
+                    break;
+                case "2":
+                    gender = 2;
+                    break;
+                default:
+                    Console.WriteLine("You did not input 1 or 2.");
+                    Console.ReadLine();
+                    Console.Clear();
+                    GetGender();
+                    break;
+            }
+
+            return gender;
         }
 
         public void ListOfAnimals()
