@@ -897,7 +897,59 @@ namespace HumaneSocietyProject
                               where types.AnimalTypeID == id
                               select types;
 
-            foreach(AnimalType )
+            foreach(AnimalType type in animalyType)
+            {
+                Console.WriteLine($"Animal Type: {type.TypeOfAnimal} \t Food Type: {type.FoodType}");
+            }
+
+            GetAmountPerWeek(employee, id);
+        }
+
+        public void GetAmountPerWeek(string employee, int id)
+        {
+            int weeks = 0;
+            Console.WriteLine("How many weeks are you feeding this animal for?");
+            
+            try
+            {
+                weeks = int.Parse(Console.ReadLine());
+            }
+            catch(FormatException)
+            {
+                Console.WriteLine("You did not input a number.");
+                Console.ReadLine();
+                Console.Clear();
+                GetAmountPerWeek(employee, id);
+            }
+
+            GetServingSize(employee, id, weeks);
+        }
+
+        public void GetServingSize(string employee, int id, int weeks)
+        {
+            int servingSize = 0;
+            var animalType = from type in database.AnimalTypes
+                             where type.AnimalTypeID == id
+                             select type;
+
+            foreach(AnimalType animal in animalType)
+            {
+                var foodtypes = from food in database.FoodTypes
+                               where food.FoodTypeID == animal.FoodTypeID
+                               select food;
+
+                foreach(FoodType type in foodtypes)
+                {
+                    servingSize = type.WeeklyServing * weeks;
+                    Console.WriteLine($"You would need {servingSize} per week for this animal.");
+                    Console.ReadLine();
+                }
+            }
+
+            Console.WriteLine("Please press enter to return to the main menu.");
+            Console.ReadLine();
+            Console.Clear();
+            GetEmployeeMenu(employee);
         }
 
         public void ListOfAnimals()
