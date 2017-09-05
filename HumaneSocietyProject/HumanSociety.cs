@@ -572,7 +572,55 @@ namespace HumaneSocietyProject
 
         public int GetRoom()
         {
+            int newRoom = 0;
+            Console.WriteLine("All rooms below are taken, please enter a new room number for this animal.");
 
+            var roomNumber = from room in database.Rooms
+                             select room;
+
+            foreach(Room number in roomNumber)
+            {
+                Console.WriteLine($"Room: {number.RoomNumber}");
+            }
+
+            try
+            {
+                newRoom = int.Parse(Console.ReadLine());
+            }
+            catch(FormatException)
+            {
+                Console.WriteLine("You entry was invalid.");
+                Console.ReadLine();
+                Console.Clear();
+                GetRoom();
+            }
+
+            newRoom = VerifyRoom(newRoom);
+
+            return newRoom;
+        }
+
+        public int VerifyRoom(int room)
+        {
+            int roomNumber = room;
+
+            var number = from rooms in database.Rooms
+                         where rooms.RoomNumber == roomNumber
+                         select rooms;
+
+            if(number != null)
+            {
+                Console.WriteLine("That room is already taken.");
+                Console.ReadLine();
+                Console.Clear();
+                GetRoom();
+            }
+            else
+            {
+                roomNumber = room;
+            }
+
+            return roomNumber;
         }
 
         public void ListOfAnimals()
