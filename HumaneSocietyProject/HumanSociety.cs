@@ -359,6 +359,8 @@ namespace HumaneSocietyProject
             int animalType = GetAnimalType();
 
             int room = GetRoom();
+
+            int color = GetAnimalColor();
         }
 
         public bool CheckVaccinated()
@@ -621,6 +623,61 @@ namespace HumaneSocietyProject
             }
 
             return roomNumber;
+        }
+
+        public int GetAnimalColor()
+        {
+            int color = 0;
+
+            Console.WriteLine("Here is a list of colors.  Please choose an ID of the color.");
+
+            var colorTypes = from colors in database.Colors
+                        select colors;
+
+            foreach(Color type in colorTypes)
+            {
+                Console.WriteLine($"Color: {type.Color1} \t ID: {type.ColorID}");
+            }
+
+            try
+            {
+                color = int.Parse(Console.ReadLine());
+            }
+            catch (FormatException)
+            {
+
+                Console.WriteLine("You have an invalid input.");
+                Console.ReadLine();
+                Console.Clear();
+                GetAnimalColor();
+            }
+
+            color = VerifyColorID(color);
+
+            return color;
+        }
+
+        public int VerifyColorID(int id)
+        {
+            int colorID = id;
+
+            var idNumbers = from color in database.Colors
+                            where color.ColorID == id
+                            select color;
+
+            if(idNumbers == null)
+            {
+                Console.WriteLine("That color does not exist in the database.");
+                Console.ReadLine();
+                Console.Clear();
+                GetAnimalColor();
+            }
+            else
+            {
+                colorID = id;
+            }
+
+            return colorID;
         }
 
         public void ListOfAnimals()
