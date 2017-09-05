@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -262,6 +263,11 @@ namespace HumaneSocietyProject
             GetUserPrice(userName, type, colorID);
         }
 
+        public void GetUserPrice(string userName, int type, int colorID)
+        {
+            //TODO
+        }
+
         public void GetEmployee()
         {
             Console.WriteLine("Please enter your user name.");
@@ -338,11 +344,15 @@ namespace HumaneSocietyProject
 
         public void CheckOnAnimals(string employee)
         {
-            Console.WriteLine("Please select what to check. \n 1: Add An Animal \n 2: Shots \n 3: Food \n 4: Collect Money \n 5: Verify Adoption \n 6: Check Rooms \n 7: User Menu \n 8: Log off");
+            Console.WriteLine("Please select what to check. \n 0: Load CSV file. \n 1: Add An Animal \n 2: Shots \n 3: Food \n 4: Collect Money \n 5: Verify Adoption \n 6: Check Rooms \n 7: User Menu \n 8: Log off");
             string choice = Console.ReadLine();
 
             switch(choice)
             {
+                case "0":
+                    Console.Clear();
+                    LoadCSVFile(employee);
+                    break;
                 case "1":
                     Console.Clear();
                     AddAnimal(employee);
@@ -1250,6 +1260,32 @@ namespace HumaneSocietyProject
             foreach(Color color in colors)
             {
                 Console.WriteLine($"{color.Color1} \t ID: {color.ColorID}");
+            }
+        }
+
+        public void LoadCSVFile(string employee)
+        {
+            Console.WriteLine("Location of the csv file? Please include drive \"c:\\\".");
+            string location = Console.ReadLine();
+
+            var csv = File.ReadLines(@location).Select(x => x.Split(','));
+
+            foreach(var info in csv)
+            {
+                Animal animal = new Animal();
+                animal.Name = info[0];
+                animal.Vaccinated = Convert.ToBoolean(info[1]);
+                animal.Age = int.Parse(info[2]);
+                animal.Price = int.Parse(info[3]);
+                animal.Adopted = Convert.ToBoolean(info[4]);
+                animal.AdopterID = int.Parse(info[5]);
+                animal.AnimalTypeID = int.Parse(info[6]);
+                animal.RoomID = int.Parse(info[7]);
+                animal.ColorID = int.Parse(info[8]);
+                animal.GenderID = int.Parse(info[9]);
+
+                database.Animals.InsertOnSubmit(animal);
+                database.SubmitChanges();
             }
         }
     }
