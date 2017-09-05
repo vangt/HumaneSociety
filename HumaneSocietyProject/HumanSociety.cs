@@ -298,6 +298,7 @@ namespace HumaneSocietyProject
 
             Console.WriteLine("Please press enter to return the the user menu.");
             Console.ReadLine();
+            Console.Clear();
             GetUserMenu(userName);
         }
 
@@ -1241,9 +1242,18 @@ namespace HumaneSocietyProject
             var animal = from animals in database.Animals
                          select animals;
 
+            
+
             foreach (Animal animals in animal)
             {
-                Console.WriteLine($"Name: {animals.Name} \t ID: {animals.Room.RoomNumber}");
+                var room = from rooms in database.Rooms
+                           where rooms.RoomID == animals.RoomID
+                           select rooms;
+
+                foreach(Room rooms in room)
+                {
+                    Console.WriteLine($"Name: {animals.Name} \t Room: {rooms.RoomNumber}");
+                }
             }
 
             Console.WriteLine("Please press enter to return to the main menu.");
