@@ -266,9 +266,11 @@ namespace HumaneSocietyProject
             switch(choice)
             {
                 case "1":
+                    Console.Clear();
                     EmployeeInformation(employee);
                     break;
                 case "2":
+                    Console.Clear();
                     CheckOnAnimals(employee);
                     break;
                 case "3":
@@ -277,6 +279,9 @@ namespace HumaneSocietyProject
                     Environment.Exit(0);
                     break;
                 default:
+                    Console.WriteLine("You have entered an invalid choice.");
+                    Console.Clear();
+                    GetEmployeeMenu(employee);
                     break;
             }
         }
@@ -298,6 +303,163 @@ namespace HumaneSocietyProject
             GetEmployeeMenu(employee);
         }
 
+        public void CheckOnAnimals(string employee)
+        {
+            Console.WriteLine("Please select what to check. \n 1: Add An Animal \n 2: Shots \n 3: Food \n 4: Collect Money \n 5: Verify Adoption \n 6: Check Rooms \n 7: User Menu \n 8: Log off");
+            string choice = Console.ReadLine();
+
+            switch(choice)
+            {
+                case "1":
+                    Console.Clear();
+                    AddAnimal(employee);
+                    break;
+                case "2":
+                    break;
+                case "3":
+                    break;
+                case "4":
+                    break;
+                case "5":
+                    break;
+                case "6":
+                    break;
+                case "7":
+                    Console.Clear();
+                    GetEmployeeMenu(employee);
+                    break;
+                case "8":
+                    Console.WriteLine("Thank you for your hard work.  Goodbye.");
+                    Console.ReadLine();
+                    Environment.Exit(0);
+                    break;
+                default:
+                    Console.WriteLine("You have enter an invalid choice.");
+                    Console.Clear();
+                    CheckOnAnimals(employee);
+                    break;
+            }
+        }
+
+        public void AddAnimal(string employee)
+        {
+            Console.WriteLine("What is the animal's name?");
+            string animalName = Console.ReadLine();
+
+            bool vaccinated = CheckVaccinated();
+
+            int age = CheckAge();
+
+            int price = CheckPrice();
+
+            bool adopted = CheckAdoptedStatus();
+
+            int adopter = CheckAdopter();
+        }
+
+        public bool CheckVaccinated()
+        {
+            bool vaccinated = false;
+
+            Console.WriteLine("Is the animal vaccinated, yes or no?");
+            string answer = Console.ReadLine();
+
+            switch(answer)
+            {
+                case "yes":
+                    vaccinated = true;
+                    break;
+                case "no":
+                    vaccinated = false;
+                    break;
+                default:
+                    Console.WriteLine("You need to input yes or no.");
+                    CheckVaccinated();
+                    break;
+            }
+
+            return vaccinated;
+        }
+
+        public int CheckAge()
+        {
+            int age = 0;
+            try
+            {
+                Console.WriteLine("What is the age of the animal, please enter 0.");
+                age = int.Parse(Console.ReadLine());
+            }
+            catch(FormatException)
+            {
+                Console.WriteLine("Your entry was invalid.");
+                Console.ReadLine();
+                CheckAge();
+            }
+
+            return age;
+        }
+
+        public int CheckPrice()
+        {
+            int price = 0;
+
+            try
+            {
+                Console.WriteLine("What is the price of the animal (no cents, decimals, or \"$\" needed).  If price is undecided enter 0.");
+                price = int.Parse(Console.ReadLine());
+            }
+            catch(FormatException)
+            {
+                Console.WriteLine("You entry was invalid.");
+                CheckPrice();
+            }
+
+            return price;
+        }
+
+        public bool CheckAdoptedStatus()
+        {
+            bool status = false;
+
+            Console.WriteLine("Is this animal already adopted, yes or no?");
+            string answer = Console.ReadLine();
+
+            switch(answer)
+            {
+                case "yes":
+                    status = true;
+                    break;
+                case "no":
+                    status = false;
+                    break;
+                default:
+                    Console.WriteLine("You did not enter yes or no.");
+                    CheckAdoptedStatus();
+                    break;
+            }
+
+            return status;
+        }
+
+        public int CheckAdopter()
+        {
+            int adopter = 0;
+
+            Console.WriteLine("Is this animal adopted, yes or no.");
+            string answer = Console.ReadLine();
+
+            switch(answer)
+            {
+                case "yes":
+                    break;
+                case "no":
+                    break;
+                default:
+                    Console.WriteLine("You did not enter yes or no.");
+                    CheckAdopter();
+                    break;
+            }
+        }
 
         public void ListOfAnimals()
         {
