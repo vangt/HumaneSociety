@@ -355,6 +355,10 @@ namespace HumaneSocietyProject
             bool adopted = CheckAdoptedStatus();
 
             int adopter = CheckAdopter();
+
+            int animalType = GetAnimalType();
+
+            int room = GetRoom();
         }
 
         public bool CheckVaccinated()
@@ -451,14 +455,124 @@ namespace HumaneSocietyProject
             switch(answer)
             {
                 case "yes":
+                    adopter = GetAdopterID();
                     break;
                 case "no":
+                    adopter = 0;
                     break;
                 default:
                     Console.WriteLine("You did not enter yes or no.");
                     CheckAdopter();
                     break;
             }
+
+            return adopter;
+        }
+
+        public int GetAdopterID()
+        {
+            int id = 0;
+            Console.WriteLine("From the list below, please enter the ID of the adopter.");
+
+            var adopter = from person in database.Adopters
+                          select person;
+
+            foreach(Adopter person in adopter)
+            {
+                Console.WriteLine($"First Name: {person.FirstName} \t Last Name: {person.LastName} \t ID: {person.AdopterID}");
+            }
+
+            try
+            {
+                id = int.Parse(Console.ReadLine());
+            }
+            catch(FormatException)
+            {
+                Console.WriteLine("You did not enter a valid ID number.");
+            }
+
+            id = VerifyID(id);
+
+            return id;
+        }
+
+        public int VerifyID(int id)
+        {
+            int check = id;
+            var adopter = from person in database.Adopters
+                          where person.AdopterID == check
+                          select person;
+
+            if(adopter == null)
+            {
+                Console.WriteLine("There is no adopter with this id number.");
+                GetAdopterID();
+            }
+            else
+            {
+                check = id;
+            }
+
+            return check;
+        }
+
+        public int GetAnimalType()
+        {
+            int animalType = 0;
+
+            Console.WriteLine("Please choose the ID associated with that represents this animal's type.");
+
+            var types = from animal in database.AnimalTypes
+                          select animal;
+
+            foreach(AnimalType animal in types)
+            {
+                Console.WriteLine($"Type: {animal.TypeOfAnimal} \t ID: {animal.AnimalTypeID}");
+            }
+
+            try
+            {
+                animalType = int.Parse(Console.ReadLine());
+            }
+            catch(FormatException)
+            {
+                Console.WriteLine("Your input was invalid.");
+                Console.ReadLine();
+                Console.Clear();
+                GetAdopteeLogin();
+            }
+
+            animalType = VerifyAnimalID(animalType);
+
+            return animalType;
+        }
+
+        public int VerifyAnimalID(int id)
+        {
+            int animalId = id;
+
+            var animalType = from animal in database.AnimalTypes
+                             where animal.AnimalTypeID == animalId
+                             select animal;
+
+            if(animalType == null)
+            {
+                Console.WriteLine("The ID you entered was not found.");
+                Console.ReadLine();
+                Console.Clear();
+                GetAnimalType();
+            }
+            else
+            {
+                animalId = id;
+            }
+
+            return animalId;
+        }
+
+        public int GetRoom()
+        {
+
         }
 
         public void ListOfAnimals()
