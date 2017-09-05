@@ -320,9 +320,11 @@ namespace HumaneSocietyProject
                     break;
                 case "3":
                     Console.Clear();
-                    GetFoodMenu();
+                    GetFoodMenu(employee);
                     break;
                 case "4":
+                    Console.Clear();
+                    CollectMoney()
                     break;
                 case "5":
                     break;
@@ -952,6 +954,13 @@ namespace HumaneSocietyProject
             GetEmployeeMenu(employee);
         }
 
+        public void CollectMoney(string employee)
+        {
+            Console.WriteLine("Which adopter ID is adopting a new animal?");
+
+
+        }
+
         public void ListOfAnimals()
         {
             var animal = from animals in database.Animals
@@ -971,6 +980,17 @@ namespace HumaneSocietyProject
             foreach(AnimalType type in animalType)
             {
                 Console.WriteLine($"Type: {type.TypeOfAnimal} \t ID: {type.AnimalTypeID}");
+            }
+        }
+
+        public void ListOfAdopters()
+        {
+            var adoptee = from adopter in database.Adopters
+                          select adopter;
+
+            foreach(Adopter adopter in adoptee)
+            {
+                Console.WriteLine($"First Name: {adopter.FirstName} \t Last Name: {adopter.LastName} \t ID: {adopter.AdopterID}");
             }
         }
     }
