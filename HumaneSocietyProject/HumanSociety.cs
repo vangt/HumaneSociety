@@ -315,6 +315,8 @@ namespace HumaneSocietyProject
                     AddAnimal(employee);
                     break;
                 case "2":
+                    Console.Clear();
+                    GetShotMenu(employee);
                     break;
                 case "3":
                     break;
@@ -754,14 +756,101 @@ namespace HumaneSocietyProject
             return gender;
         }
 
+        public void GetShotMenu(string employee)
+        {
+            int animalID = 0;
+            Console.WriteLine("Please select the ID of the animal you wish to check?");
+
+            ListOfAnimals();
+
+            try
+            {
+                animalID = int.Parse(Console.ReadLine());
+            }
+            catch(FormatException)
+            {
+                Console.WriteLine("You have an invalid entry.");
+                Console.ReadLine();
+                Console.Clear();
+                GetShotMenu(employee);
+            }
+
+            animalID = VerifyAnimalID(animalID);
+            GetVaccination(employee, animalID);
+        }
+
+        public void GetVaccination(string employee, int animalID)
+        {
+            var vaccinated = from animals in database.Animals
+                              where animals.AnimalID == animalID
+                              select animals;
+
+            foreach(Animal animal in vaccinated)
+            {
+                if(animal.Vaccinated == false)
+                {
+                    GetVaccinated(employee, animalID);
+                }
+                else
+                {
+                    Console.WriteLine("This animal is already vaccinated. \n Please press enter to return to main menu.");
+                    Console.ReadLine();
+                    Console.Clear();
+                    GetEmployeeMenu(employee);
+                }
+            }
+        }
+
+        public void GetVaccinated(string employee, int animalID)
+        {
+            Console.WriteLine("This animal does not have it's shots. \n Do you wish to give it shots, yes or no?");
+            string choice = Console.ReadLine();
+            
+            switch(choice)
+            {
+                case "yes":
+                    ChangeVaccinatedStatus(employee, animalID);
+                    break;
+                case "no":
+                    Console.WriteLine("You have choosen \"no\".  Please press enter to return to the main menu.");
+                    Console.ReadLine();
+                    Console.Clear();
+                    GetEmployeeMenu(employee);
+                    break;
+                default:
+                    Console.WriteLine("You did not input yes or no.");
+                    GetVaccinated(employee, animalID);
+                    break;
+            }
+        }
+
+        public void ChangeVaccinatedStatus(string employee, int animalID)
+        {
+            var animal = from animals in database.Animals
+                         where animals.AnimalID == animalID
+                         select animals;
+
+            foreach(Animal animals in animal)
+            {
+                animals.Vaccinated = true;
+                database.Animals.InsertOnSubmit(animals);
+                database.SubmitChanges();
+            }
+
+            Console.WriteLine("You have given this animal it's shots. \n Please press enter to return to the main menu.");
+            Console.ReadLine();
+            Console.Clear();
+            GetEmployeeMenu(employee);
+        }
+
         public void ListOfAnimals()
         {
-            var a = from b in database.Animals
-                    select b;
+            var animal = from animals in database.Animals
+                    select animals;
 
-            foreach(Animal c in a)
+            foreach(Animal animals in animal)
             {
-                Console.WriteLine(c.Name);
+                Console.WriteLine($"Name: {animals.Name} \t ID: {animals.AnimalID}");
             }
         }
     }
