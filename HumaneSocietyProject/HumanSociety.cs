@@ -226,7 +226,40 @@ namespace HumaneSocietyProject
 
         public void FindAnimal(string userName)
         {
-            //TODO:
+            int type = 0;
+            Console.WriteLine("What type of animal are you looking for? Please enter the ID.");
+            ListAnimalTypes();
+
+            try
+            {
+                type = int.Parse(Console.ReadLine());
+            }
+            catch(FormatException)
+            {
+                Console.WriteLine("You have inputed an invalid selection.");
+                FindAnimal(userName);
+            }
+
+            GetColor(userName, type);
+        }
+
+        public void GetColor(string userName, int type)
+        {
+            int colorID = 0;
+            Console.WriteLine("What color are you looking for? Please enter the ID.");
+            ListColor();
+
+            try
+            {
+                colorID = int.Parse(Console.ReadLine());
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("You have inputed an invalid selection.");
+                GetColor(userName, type);
+            }
+
+            GetUserPrice(userName, type, colorID);
         }
 
         public void GetEmployee()
@@ -332,7 +365,7 @@ namespace HumaneSocietyProject
                     break;
                 case "6":
                     Console.Clear();
-                    GetRoomList();
+                    GetRoomList(employee);
                     break;
                 case "7":
                     Console.Clear();
@@ -1206,6 +1239,17 @@ namespace HumaneSocietyProject
             foreach(Adopter adopter in adoptee)
             {
                 Console.WriteLine($"First Name: {adopter.FirstName} \t Last Name: {adopter.LastName} \t ID: {adopter.AdopterID}");
+            }
+        }
+
+        public void ListColor()
+        {
+            var colors = from color in database.Colors
+                         select color;
+
+            foreach(Color color in colors)
+            {
+                Console.WriteLine($"{color.Color1} \t ID: {color.ColorID}");
             }
         }
     }
