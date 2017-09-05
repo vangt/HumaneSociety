@@ -1158,6 +1158,24 @@ namespace HumaneSocietyProject
             GetEmployeeMenu(employee);
         }
 
+        public void GetRoomList(string employee)
+        {
+            Console.WriteLine("Here is a list of animals and their rooms.");
+
+            var animal = from animals in database.Animals
+                         select animals;
+
+            foreach (Animal animals in animal)
+            {
+                Console.WriteLine($"Name: {animals.Name} \t ID: {animals.Room.RoomNumber}");
+            }
+
+            Console.WriteLine("Please press enter to return to the main menu.");
+            Console.ReadLine();
+            Console.Clear();
+            GetEmployeeMenu(employee);
+        }
+
         public void ListOfAnimals()
         {
             var animal = from animals in database.Animals
