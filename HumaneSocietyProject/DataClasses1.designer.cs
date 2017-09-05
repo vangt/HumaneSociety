@@ -42,9 +42,6 @@ namespace HumaneSocietyProject
     partial void InsertColor(Color instance);
     partial void UpdateColor(Color instance);
     partial void DeleteColor(Color instance);
-    partial void InsertEmployee(Employee instance);
-    partial void UpdateEmployee(Employee instance);
-    partial void DeleteEmployee(Employee instance);
     partial void InsertFoodType(FoodType instance);
     partial void UpdateFoodType(FoodType instance);
     partial void DeleteFoodType(FoodType instance);
@@ -57,6 +54,9 @@ namespace HumaneSocietyProject
     partial void InsertRoom(Room instance);
     partial void UpdateRoom(Room instance);
     partial void DeleteRoom(Room instance);
+    partial void InsertEmployee(Employee instance);
+    partial void UpdateEmployee(Employee instance);
+    partial void DeleteEmployee(Employee instance);
     #endregion
 		
 		public DataClasses1DataContext() : 
@@ -121,14 +121,6 @@ namespace HumaneSocietyProject
 			}
 		}
 		
-		public System.Data.Linq.Table<Employee> Employees
-		{
-			get
-			{
-				return this.GetTable<Employee>();
-			}
-		}
-		
 		public System.Data.Linq.Table<FoodType> FoodTypes
 		{
 			get
@@ -158,6 +150,14 @@ namespace HumaneSocietyProject
 			get
 			{
 				return this.GetTable<Room>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Employee> Employees
+		{
+			get
+			{
+				return this.GetTable<Employee>();
 			}
 		}
 	}
@@ -638,6 +638,8 @@ namespace HumaneSocietyProject
 		
 		private EntitySet<Payment> _Payments;
 		
+		private EntitySet<Employee> _Employees;
+		
 		private EntityRef<Adopter> _Adopter;
 		
 		private EntityRef<AnimalType> _AnimalType;
@@ -683,6 +685,7 @@ namespace HumaneSocietyProject
 		public Animal()
 		{
 			this._Payments = new EntitySet<Payment>(new Action<Payment>(this.attach_Payments), new Action<Payment>(this.detach_Payments));
+			this._Employees = new EntitySet<Employee>(new Action<Employee>(this.attach_Employees), new Action<Employee>(this.detach_Employees));
 			this._Adopter = default(EntityRef<Adopter>);
 			this._AnimalType = default(EntityRef<AnimalType>);
 			this._Color = default(EntityRef<Color>);
@@ -969,6 +972,19 @@ namespace HumaneSocietyProject
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Animal_Employee", Storage="_Employees", ThisKey="AnimalID", OtherKey="AnimalID")]
+		public EntitySet<Employee> Employees
+		{
+			get
+			{
+				return this._Employees;
+			}
+			set
+			{
+				this._Employees.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Adopter_Animal", Storage="_Adopter", ThisKey="AdopterID", OtherKey="AdopterID", IsForeignKey=true)]
 		public Adopter Adopter
 		{
@@ -1204,6 +1220,18 @@ namespace HumaneSocietyProject
 			this.SendPropertyChanging();
 			entity.Animal = null;
 		}
+		
+		private void attach_Employees(Employee entity)
+		{
+			this.SendPropertyChanging();
+			entity.Animal = this;
+		}
+		
+		private void detach_Employees(Employee entity)
+		{
+			this.SendPropertyChanging();
+			entity.Animal = null;
+		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Color")]
@@ -1317,164 +1345,6 @@ namespace HumaneSocietyProject
 		{
 			this.SendPropertyChanging();
 			entity.Color = null;
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Employee")]
-	public partial class Employee : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _EmployeeID;
-		
-		private string _EmployeeFirstName;
-		
-		private string _EmployeeLastName;
-		
-		private string _EmployeeUserName;
-		
-		private string _EmployeePassword;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnEmployeeIDChanging(int value);
-    partial void OnEmployeeIDChanged();
-    partial void OnEmployeeFirstNameChanging(string value);
-    partial void OnEmployeeFirstNameChanged();
-    partial void OnEmployeeLastNameChanging(string value);
-    partial void OnEmployeeLastNameChanged();
-    partial void OnEmployeeUserNameChanging(string value);
-    partial void OnEmployeeUserNameChanged();
-    partial void OnEmployeePasswordChanging(string value);
-    partial void OnEmployeePasswordChanged();
-    #endregion
-		
-		public Employee()
-		{
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EmployeeID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int EmployeeID
-		{
-			get
-			{
-				return this._EmployeeID;
-			}
-			set
-			{
-				if ((this._EmployeeID != value))
-				{
-					this.OnEmployeeIDChanging(value);
-					this.SendPropertyChanging();
-					this._EmployeeID = value;
-					this.SendPropertyChanged("EmployeeID");
-					this.OnEmployeeIDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EmployeeFirstName", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string EmployeeFirstName
-		{
-			get
-			{
-				return this._EmployeeFirstName;
-			}
-			set
-			{
-				if ((this._EmployeeFirstName != value))
-				{
-					this.OnEmployeeFirstNameChanging(value);
-					this.SendPropertyChanging();
-					this._EmployeeFirstName = value;
-					this.SendPropertyChanged("EmployeeFirstName");
-					this.OnEmployeeFirstNameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EmployeeLastName", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string EmployeeLastName
-		{
-			get
-			{
-				return this._EmployeeLastName;
-			}
-			set
-			{
-				if ((this._EmployeeLastName != value))
-				{
-					this.OnEmployeeLastNameChanging(value);
-					this.SendPropertyChanging();
-					this._EmployeeLastName = value;
-					this.SendPropertyChanged("EmployeeLastName");
-					this.OnEmployeeLastNameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EmployeeUserName", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string EmployeeUserName
-		{
-			get
-			{
-				return this._EmployeeUserName;
-			}
-			set
-			{
-				if ((this._EmployeeUserName != value))
-				{
-					this.OnEmployeeUserNameChanging(value);
-					this.SendPropertyChanging();
-					this._EmployeeUserName = value;
-					this.SendPropertyChanged("EmployeeUserName");
-					this.OnEmployeeUserNameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EmployeePassword", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string EmployeePassword
-		{
-			get
-			{
-				return this._EmployeePassword;
-			}
-			set
-			{
-				if ((this._EmployeePassword != value))
-				{
-					this.OnEmployeePasswordChanging(value);
-					this.SendPropertyChanging();
-					this._EmployeePassword = value;
-					this.SendPropertyChanged("EmployeePassword");
-					this.OnEmployeePasswordChanged();
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
 		}
 	}
 	
@@ -2016,6 +1886,229 @@ namespace HumaneSocietyProject
 		{
 			this.SendPropertyChanging();
 			entity.Room = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Employee")]
+	public partial class Employee : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _EmployeeID;
+		
+		private string _EmployeeFirstName;
+		
+		private string _EmployeeLastName;
+		
+		private string _EmployeeUserName;
+		
+		private string _EmployeePassword;
+		
+		private System.Nullable<int> _AnimalID;
+		
+		private EntityRef<Animal> _Animal;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnEmployeeIDChanging(int value);
+    partial void OnEmployeeIDChanged();
+    partial void OnEmployeeFirstNameChanging(string value);
+    partial void OnEmployeeFirstNameChanged();
+    partial void OnEmployeeLastNameChanging(string value);
+    partial void OnEmployeeLastNameChanged();
+    partial void OnEmployeeUserNameChanging(string value);
+    partial void OnEmployeeUserNameChanged();
+    partial void OnEmployeePasswordChanging(string value);
+    partial void OnEmployeePasswordChanged();
+    partial void OnAnimalIDChanging(System.Nullable<int> value);
+    partial void OnAnimalIDChanged();
+    #endregion
+		
+		public Employee()
+		{
+			this._Animal = default(EntityRef<Animal>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EmployeeID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int EmployeeID
+		{
+			get
+			{
+				return this._EmployeeID;
+			}
+			set
+			{
+				if ((this._EmployeeID != value))
+				{
+					this.OnEmployeeIDChanging(value);
+					this.SendPropertyChanging();
+					this._EmployeeID = value;
+					this.SendPropertyChanged("EmployeeID");
+					this.OnEmployeeIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EmployeeFirstName", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string EmployeeFirstName
+		{
+			get
+			{
+				return this._EmployeeFirstName;
+			}
+			set
+			{
+				if ((this._EmployeeFirstName != value))
+				{
+					this.OnEmployeeFirstNameChanging(value);
+					this.SendPropertyChanging();
+					this._EmployeeFirstName = value;
+					this.SendPropertyChanged("EmployeeFirstName");
+					this.OnEmployeeFirstNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EmployeeLastName", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string EmployeeLastName
+		{
+			get
+			{
+				return this._EmployeeLastName;
+			}
+			set
+			{
+				if ((this._EmployeeLastName != value))
+				{
+					this.OnEmployeeLastNameChanging(value);
+					this.SendPropertyChanging();
+					this._EmployeeLastName = value;
+					this.SendPropertyChanged("EmployeeLastName");
+					this.OnEmployeeLastNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EmployeeUserName", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string EmployeeUserName
+		{
+			get
+			{
+				return this._EmployeeUserName;
+			}
+			set
+			{
+				if ((this._EmployeeUserName != value))
+				{
+					this.OnEmployeeUserNameChanging(value);
+					this.SendPropertyChanging();
+					this._EmployeeUserName = value;
+					this.SendPropertyChanged("EmployeeUserName");
+					this.OnEmployeeUserNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EmployeePassword", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string EmployeePassword
+		{
+			get
+			{
+				return this._EmployeePassword;
+			}
+			set
+			{
+				if ((this._EmployeePassword != value))
+				{
+					this.OnEmployeePasswordChanging(value);
+					this.SendPropertyChanging();
+					this._EmployeePassword = value;
+					this.SendPropertyChanged("EmployeePassword");
+					this.OnEmployeePasswordChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AnimalID", DbType="Int")]
+		public System.Nullable<int> AnimalID
+		{
+			get
+			{
+				return this._AnimalID;
+			}
+			set
+			{
+				if ((this._AnimalID != value))
+				{
+					if (this._Animal.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnAnimalIDChanging(value);
+					this.SendPropertyChanging();
+					this._AnimalID = value;
+					this.SendPropertyChanged("AnimalID");
+					this.OnAnimalIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Animal_Employee", Storage="_Animal", ThisKey="AnimalID", OtherKey="AnimalID", IsForeignKey=true)]
+		public Animal Animal
+		{
+			get
+			{
+				return this._Animal.Entity;
+			}
+			set
+			{
+				Animal previousValue = this._Animal.Entity;
+				if (((previousValue != value) 
+							|| (this._Animal.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Animal.Entity = null;
+						previousValue.Employees.Remove(this);
+					}
+					this._Animal.Entity = value;
+					if ((value != null))
+					{
+						value.Employees.Add(this);
+						this._AnimalID = value.AnimalID;
+					}
+					else
+					{
+						this._AnimalID = default(Nullable<int>);
+					}
+					this.SendPropertyChanged("Animal");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
 		}
 	}
 }

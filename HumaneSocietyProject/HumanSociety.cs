@@ -192,6 +192,7 @@ namespace HumaneSocietyProject
                     DisplayUserInformation(userName);
                     break;
                 case "2":
+                    FindAnimal(userName);
                     break;
                 case "3":
                     Console.WriteLine("Thank you for visiting the Humane Society.  Goodbye.");
@@ -216,13 +217,87 @@ namespace HumaneSocietyProject
             {
                 Console.WriteLine($"First Name: {person.FirstName} \n Last Name: {person.LastName} \n Address: {person.StreetAddress} \n City: {person.City} \n State: {person.State} \n Zip: {person.Zip} \n Phone: {person.Phone} \n DOB: {person.DOB}");
             }
+
+            Console.WriteLine("Please press enter to continue.");
             Console.ReadLine();
+            Console.Clear();
+            GetUserMenu(userName);
+        }
+
+        public void FindAnimal(string userName)
+        {
+            //TODO:
         }
 
         public void GetEmployee()
         {
+            Console.WriteLine("Please enter your user name.");
+            string employee = Console.ReadLine();
+            Console.WriteLine("Please enter your password.");
+            string employeePassword = Console.ReadLine();
 
+            CheckEmployeeCredientals(employee, employeePassword);
         }
+
+        public void CheckEmployeeCredientals(string employee, string employeePassword)
+        {
+            var employeeUser = from person in database.Employees
+                          where person.EmployeeUserName == employee && person.EmployeePassword == employeePassword
+                          select person;
+
+            if (employeeUser != null)
+            {
+                GetEmployeeMenu(employee);
+            }
+            else
+            {
+                Console.WriteLine("User was not found or password was incorrect.");
+                Console.ReadLine();
+                Console.Clear();
+                GetAdopteeLogin();
+            }
+        }
+
+        public void GetEmployeeMenu(string employee)
+        {
+            Console.WriteLine("Welcome to work!  What would you like to do? \n 1: Employee info. \n 2: Check on an animal \n 3: Log off");
+            string choice = Console.ReadLine();
+
+            switch(choice)
+            {
+                case "1":
+                    EmployeeInformation(employee);
+                    break;
+                case "2":
+                    CheckOnAnimals(employee);
+                    break;
+                case "3":
+                    Console.WriteLine("Have a good day.  Goodbye.");
+                    Console.ReadLine();
+                    Environment.Exit(0);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public void EmployeeInformation(string employee)
+        {
+            var user = from person in database.Employees
+                       where person.EmployeeUserName == employee
+                       select person;
+
+            foreach(Employee person in user)
+            {
+                Console.WriteLine($"First Name: {person.EmployeeFirstName} \n Last Name: {person.EmployeeLastName}");
+            }
+
+            Console.WriteLine("Please press enter to return to the menu screen.");
+            Console.ReadLine();
+            Console.Clear();
+            GetEmployeeMenu(employee);
+        }
+
 
         public void ListOfAnimals()
         {
