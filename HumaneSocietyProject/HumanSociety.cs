@@ -329,7 +329,7 @@ namespace HumaneSocietyProject
 
         public void GetEmployeeMenu(string employee)
         {
-            Console.WriteLine("Welcome to work!  What would you like to do? \n 1: Employee info. \n 2: Check on an animal \n 3: Log off");
+            Console.WriteLine("Welcome to work!  What would you like to do? \n 1: Employee info. \n 2: Check on an animal \n 3: List of Animals \n 4: Log off");
             string choice = Console.ReadLine();
 
             switch(choice)
@@ -343,6 +343,10 @@ namespace HumaneSocietyProject
                     CheckOnAnimals(employee);
                     break;
                 case "3":
+                    Console.Clear();
+                    ListAnimalsInOrder(employee);
+                    break;
+                case "4":
                     Console.WriteLine("Have a good day.  Goodbye.");
                     Console.ReadLine();
                     Environment.Exit(0);
@@ -1294,12 +1298,69 @@ namespace HumaneSocietyProject
             }
         }
 
+        public void ListAnimalsInOrder(string employee)
+        {
+            int type = 0;
+            Console.WriteLine("Here is a list of animal types, which animal of the specific type do you wish to see, please input the type ID? If you wish to see entire list input 0.");
+            ListAnimalTypes();
+
+            try
+            {
+                type = int.Parse(Console.ReadLine());
+            }
+            catch(FormatException)
+            {
+                Console.WriteLine("You have an invalid input.");
+                Console.ReadLine();
+                Console.Clear();
+                ListAnimalsInOrder(employee);
+            }
+
+            if (type == 0)
+            {
+                ListAllTypes(employee);
+            }
+            else
+            {
+                type = VerifyTypeID(employee, type);
+                OrderAnimals(employee, type);
+            }      
+        }
+
+        public void ListAllTypes(string employee)
+        {
+            var animals = database.Animals.Where(x=>x.AnimalType==x.AnimalType).Select(x=>x).ToList();
+
+            foreach (Animal animal in animals.OrderBy(x=>x.AnimalTypeID))
+            {
+                Console.WriteLine($"Name: {animal.Name} \t Type: {animal.AnimalType.TypeOfAnimal} \t Age: {animal.Color.Color1} \t Price: {animal.Price} \t Vaccinated: {animal.Vaccinated} \t Gender: {animal.Gender.GenderType} \t Adopted: {animal.Adopted}");
+            }
+            Console.WriteLine("Please press enter to return to he main menu.");
+            Console.ReadLine();
+            Console.Clear();
+            GetEmployeeMenu(employee);
+        }
+
+        public void OrderAnimals(string employee, int type)
+        {
+            var animal = database.Animals.Where(x => x.AnimalTypeID == type).Select(x=>x).ToList();
+
+            foreach(Animal animals in animal)
+            {
+                Console.WriteLine($"Name: {animals.Name} \t Type: {animals.AnimalType.TypeOfAnimal} \t Age: {animals.Color.Color1} \t Price: {animals.Price} \t Vaccinated: {animals.Vaccinated} \t Gender: {animals.Gender.GenderType} \t Adopted: {animals.Adopted}");
+            }
+            Console.WriteLine("Please press enter to return to he main menu.");
+            Console.ReadLine();
+            Console.Clear();
+            GetEmployeeMenu(employee);
+        }
+
         public void LoadCSVFile(string employee)
         {
             Console.WriteLine("Location of the csv file? Please include drive \"c:\\\".");
             string location = Console.ReadLine();
 
-            var csv = File.ReadLines(@location).Select(x => x.Split(','));
+            var csv = File.ReadLines($@"{location}").Select(x => x.Split(','));
 
             foreach(var info in csv)
             {
