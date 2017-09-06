@@ -675,7 +675,7 @@ namespace HumaneSocietyProject
                 GetAdopteeLogin();
             }
 
-            animalType = VerifyAnimalID(animalType);
+            animalType = VerifyTypeID(null, animalType);
 
             return animalType;
         }
@@ -684,7 +684,7 @@ namespace HumaneSocietyProject
         {
             int animalId = id;
 
-            var animals = database.AnimalTypes.Where(x => x.AnimalTypeID == animalId).ToList();
+            var animals = database.Animals.Where(x => x.AnimalID == animalId).ToList();
 
             if(animals.Count == 0)
             {
@@ -912,7 +912,6 @@ namespace HumaneSocietyProject
             foreach(Animal animals in animal)
             {
                 animals.Vaccinated = true;
-                database.Animals.InsertOnSubmit(animals);
                 database.SubmitChanges();
             }
 
