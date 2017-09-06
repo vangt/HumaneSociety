@@ -485,7 +485,7 @@ namespace HumaneSocietyProject
             int roomNumberID = room;
 
             var roomID = from rooms in database.Rooms
-                         where rooms.RoomNumber == room
+                         where rooms.RoomNumber == roomNumberID
                          select rooms;
 
             foreach(Room id in roomID)
@@ -740,7 +740,7 @@ namespace HumaneSocietyProject
                 if (number.Count == 0)
                 {
                     Room newRoom = new Room();
-                    newRoom.RoomNumber = room;
+                    newRoom.RoomNumber = roomNumber;
 
                     database.Rooms.InsertOnSubmit(newRoom);
                     database.SubmitChanges();
@@ -1371,13 +1371,20 @@ namespace HumaneSocietyProject
                 animal.Adopted = Convert.ToBoolean(info[4]);
                 animal.AdopterID = int.Parse(info[5]);
                 animal.AnimalTypeID = int.Parse(info[6]);
-                animal.RoomID = int.Parse(info[7]);
+                int roomNumber = VerifyRoom(int.Parse(info[7]));
+                int roomID = GetRoomID(roomNumber);
+                animal.RoomID = roomID;
                 animal.ColorID = int.Parse(info[8]);
                 animal.GenderID = int.Parse(info[9]);
 
                 database.Animals.InsertOnSubmit(animal);
                 database.SubmitChanges();
             }
+
+            Console.WriteLine("You have added the animals.  Please press enter to return to the main menu.");
+            Console.ReadLine();
+            Console.Clear();
+            GetEmployeeMenu(employee);
         }
     }
 }
