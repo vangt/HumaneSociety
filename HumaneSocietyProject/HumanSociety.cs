@@ -143,7 +143,7 @@ namespace HumaneSocietyProject
         {
             var user = database.Adopters.Select(x => x.AdopterUserName == userName).ToString();
             
-            if(user == null)
+            if(user.Equals(null))
             {
                 Console.WriteLine("There is someone with this name;");
                 GetNewUserName();
@@ -169,16 +169,16 @@ namespace HumaneSocietyProject
                     where person.AdopterUserName == userName && person.AdopterPassword == password
                     select person;
             
-            if(adoptee != null)
-            {
-                GetUserMenu(userName);
-            }
-            else
+            if(adoptee.Equals(null))
             {
                 Console.WriteLine("User was not found or password was incorrect.");
                 Console.ReadLine();
                 Console.Clear();
                 GetAdopteeLogin();
+            }
+            else
+            {
+                GetUserMenu(userName);
             }
         }
 
@@ -315,10 +315,10 @@ namespace HumaneSocietyProject
         public void CheckEmployeeCredientals(string employee, string employeePassword)
         {
             var employeeUser = from person in database.Employees
-                          where person.EmployeeUserName == employee && person.EmployeePassword == employeePassword
+                          where person.EmployeeUserName.ToString() == employee && person.EmployeePassword.ToString() == employeePassword
                           select person;
 
-            if (employeeUser != null)
+            if (employeeUser.Equals(null))
             {
                 GetEmployeeMenu(employee);
             }
@@ -457,7 +457,6 @@ namespace HumaneSocietyProject
         public void AdmitAnimal(string employee, string name, bool vaccinated, int age, int price, bool adopted, int adopterID, int animalTypeID, int room, int color, int gender)
         {
             Animal animal = new Animal();
-            Room rooms = new Room();
 
             animal.Name = name;
             animal.Vaccinated = vaccinated;
@@ -466,12 +465,11 @@ namespace HumaneSocietyProject
             animal.Adopted = adopted;
             animal.AdopterID = adopterID;
             animal.AnimalTypeID = animalTypeID;
-            rooms.RoomNumber = room;
+
             animal.RoomID = GetRoomID(room);
             animal.ColorID = color;
             animal.GenderID = gender;
 
-            database.Rooms.InsertOnSubmit(rooms);
             database.Animals.InsertOnSubmit(animal);
             database.SubmitChanges();
 
@@ -484,7 +482,7 @@ namespace HumaneSocietyProject
 
         public int GetRoomID(int room)
         {
-            int roomNumberID = 0;
+            int roomNumberID = room;
 
             var roomID = from rooms in database.Rooms
                          where rooms.RoomNumber == room
@@ -496,7 +494,6 @@ namespace HumaneSocietyProject
             }
 
             return roomNumberID;
-            
         }
 
         public bool CheckVaccinated()
@@ -585,7 +582,7 @@ namespace HumaneSocietyProject
 
         public int CheckAdopter()
         {
-            int adopter = 0;
+            int adopter = 2;
 
             Console.WriteLine("Does this animal have an adopter, yes or no.");
             string answer = Console.ReadLine();
@@ -596,7 +593,7 @@ namespace HumaneSocietyProject
                     adopter = GetAdopterID();
                     break;
                 case "no":
-                    adopter = 0;
+                    adopter = 2;
                     break;
                 default:
                     Console.WriteLine("You did not enter yes or no.");
@@ -641,7 +638,7 @@ namespace HumaneSocietyProject
                           where person.AdopterID == check
                           select person;
 
-            if(adopter == null)
+            if(adopter.Equals(null))
             {
                 Console.WriteLine("There is no adopter with this id number.");
                 GetAdopterID();
@@ -693,7 +690,7 @@ namespace HumaneSocietyProject
                              where animal.AnimalID == animalId
                              select animal;
 
-            if(animals == null)
+            if(animals.Equals(null))
             {
                 Console.WriteLine("The ID you entered was not found.");
                 Console.ReadLine();
@@ -745,9 +742,8 @@ namespace HumaneSocietyProject
             var number = from rooms in database.Rooms
                          where rooms.RoomNumber == roomNumber
                          select rooms;
-            foreach (Room rooms in number)
-            {
-                if (rooms.RoomID == roomNumber)
+            
+                if (number.Equals(null))
                 {
                     Console.WriteLine("That room is already taken.");
                     Console.ReadLine();
@@ -756,9 +752,14 @@ namespace HumaneSocietyProject
                 }
                 else
                 {
+                    Room newRoom = new Room();
+                    newRoom.RoomNumber = room;
+
+                    database.Rooms.InsertOnSubmit(newRoom);
+                    database.SubmitChanges();
                     roomNumber = room;
                 }
-            }
+   
             return roomNumber;
         }
 
@@ -802,7 +803,7 @@ namespace HumaneSocietyProject
                             where color.ColorID == id
                             select color;
 
-            if(idNumbers == null)
+            if(idNumbers.Equals(null))
             {
                 Console.WriteLine("That color does not exist in the database.");
                 Console.ReadLine();
@@ -873,7 +874,7 @@ namespace HumaneSocietyProject
 
             foreach(Animal animal in vaccinated)
             {
-                if(animal.Vaccinated == false)
+                if(animal.Vaccinated.Equals(false))
                 {
                     GetVaccinated(employee, animalID);
                 }
@@ -960,7 +961,7 @@ namespace HumaneSocietyProject
                        where types.AnimalTypeID == typeID
                        select types;
 
-            if(type == null)
+            if(type.Equals(null))
             {
                 Console.WriteLine("The type you selected was not found.");
                 Console.ReadLine();
@@ -1220,7 +1221,7 @@ namespace HumaneSocietyProject
 
             foreach(Animal animal in animals)
             {
-                if(animal.Adopted == false)
+                if(animal.Adopted.Equals(false))
                 {
                     Console.WriteLine($"{animal.Name} has not been adopted yet.");
                 }
