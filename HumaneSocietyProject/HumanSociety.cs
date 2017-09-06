@@ -166,7 +166,7 @@ namespace HumaneSocietyProject
         public void CheckAdopteeLoginCredits(string userName, string password)
         {
             var adoptee = from person in database.Adopters
-                    where person.AdopterUserName == userName && person.AdopterPassword == password
+                    where person.AdopterUserName.ToString() == userName && person.AdopterPassword.ToString() == password
                     select person;
             
             if(adoptee.Equals(null))
@@ -286,7 +286,7 @@ namespace HumaneSocietyProject
         public void LookForAnimal(string userName, int type, int colorID, int price)
         {
             var animals = from animal in database.Animals
-                          where animal.AnimalTypeID == type && animal.ColorID == colorID && animal.Price < price
+                          where animal.AnimalTypeID.Value == type && animal.ColorID.Value == colorID && animal.Price.Value < price
                           select animal;
 
             Console.WriteLine("Here is a list of animals you might like. If you have any questions about purchasing an animal please contact an employee.");
@@ -314,20 +314,18 @@ namespace HumaneSocietyProject
 
         public void CheckEmployeeCredientals(string employee, string employeePassword)
         {
-            var employeeUser = from person in database.Employees
-                          where person.EmployeeUserName.ToString() == employee && person.EmployeePassword.ToString() == employeePassword
-                          select person;
+            var employeeUser = database.Employees.Where(x => x.EmployeeUserName == employee).ToList();
 
-            if (employeeUser.Equals(null))
-            {
-                GetEmployeeMenu(employee);
-            }
-            else
+            if(employeeUser.Count == 0)
             {
                 Console.WriteLine("User was not found or password was incorrect.");
                 Console.ReadLine();
                 Console.Clear();
                 GetEmployee();
+            }
+            else
+            {
+                GetEmployeeMenu(employee);
             }
         }
 
@@ -634,11 +632,9 @@ namespace HumaneSocietyProject
         public int VerifyID(int id)
         {
             int check = id;
-            var adopter = from person in database.Adopters
-                          where person.AdopterID == check
-                          select person;
+            var adopter = database.Adopters.Where(x => x.AdopterID == check).ToList();
 
-            if(adopter.Equals(null))
+            if(adopter.Count == 0)
             {
                 Console.WriteLine("There is no adopter with this id number.");
                 GetAdopterID();
@@ -686,11 +682,9 @@ namespace HumaneSocietyProject
         {
             int animalId = id;
 
-            var animals = from animal in database.Animals
-                             where animal.AnimalID == animalId
-                             select animal;
+            var animals = database.Animals.Where(x => x.AnimalID == animalId).ToList();
 
-            if(animals.Equals(null))
+            if(animals.Count == 0)
             {
                 Console.WriteLine("The ID you entered was not found.");
                 Console.ReadLine();
@@ -739,18 +733,9 @@ namespace HumaneSocietyProject
         {
             int roomNumber = room;
 
-            var number = from rooms in database.Rooms
-                         where rooms.RoomNumber == roomNumber
-                         select rooms;
+            var number = database.Rooms.Where(x => x.RoomNumber == roomNumber).ToList();
             
-                if (number.Equals(null))
-                {
-                    Console.WriteLine("That room is already taken.");
-                    Console.ReadLine();
-                    Console.Clear();
-                    GetRoom();
-                }
-                else
+                if (number.Count == 0)
                 {
                     Room newRoom = new Room();
                     newRoom.RoomNumber = room;
@@ -758,6 +743,13 @@ namespace HumaneSocietyProject
                     database.Rooms.InsertOnSubmit(newRoom);
                     database.SubmitChanges();
                     roomNumber = room;
+                }
+                else
+                {
+                    Console.WriteLine("That room is already taken.");
+                    Console.ReadLine();
+                    Console.Clear();
+                    GetRoom();
                 }
    
             return roomNumber;
@@ -799,11 +791,9 @@ namespace HumaneSocietyProject
         {
             int colorID = id;
 
-            var idNumbers = from color in database.Colors
-                            where color.ColorID == id
-                            select color;
+            var idNumbers = database.Colors.Where(x => x.ColorID == colorID).ToList();
 
-            if(idNumbers.Equals(null))
+            if(idNumbers.Count == 0)
             {
                 Console.WriteLine("That color does not exist in the database.");
                 Console.ReadLine();
@@ -957,11 +947,9 @@ namespace HumaneSocietyProject
         {
             int typeID = id;
 
-            var type = from types in database.AnimalTypes
-                       where types.AnimalTypeID == typeID
-                       select types;
+            var type = database.AnimalTypes.Where(x => x.AnimalTypeID == typeID).ToList();
 
-            if(type.Equals(null))
+            if(type.Count == 0)
             {
                 Console.WriteLine("The type you selected was not found.");
                 Console.ReadLine();
