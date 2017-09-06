@@ -165,11 +165,9 @@ namespace HumaneSocietyProject
 
         public void CheckAdopteeLoginCredits(string userName, string password)
         {
-            var adoptee = from person in database.Adopters
-                    where person.AdopterUserName.ToString() == userName && person.AdopterPassword.ToString() == password
-                    select person;
+            var adoptee = database.Adopters.Where(x => x.AdopterUserName == userName && x.AdopterPassword == password).ToList();
             
-            if(adoptee.Equals(null))
+            if(adoptee.Count == 0)
             {
                 Console.WriteLine("User was not found or password was incorrect.");
                 Console.ReadLine();
@@ -314,7 +312,7 @@ namespace HumaneSocietyProject
 
         public void CheckEmployeeCredientals(string employee, string employeePassword)
         {
-            var employeeUser = database.Employees.Where(x => x.EmployeeUserName == employee).ToList();
+            var employeeUser = database.Employees.Where(x => x.EmployeeUserName == employee && x.EmployeePassword == employeePassword).ToList();
 
             if(employeeUser.Count == 0)
             {
@@ -682,7 +680,7 @@ namespace HumaneSocietyProject
         {
             int animalId = id;
 
-            var animals = database.Animals.Where(x => x.AnimalID == animalId).ToList();
+            var animals = database.AnimalTypes.Where(x => x.AnimalTypeID == animalId).ToList();
 
             if(animals.Count == 0)
             {
