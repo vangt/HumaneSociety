@@ -587,7 +587,7 @@ namespace HumaneSocietyProject
         {
             int adopter = 0;
 
-            Console.WriteLine("Is this animal adopted, yes or no.");
+            Console.WriteLine("Does this animal have an adopter, yes or no.");
             string answer = Console.ReadLine();
 
             switch(answer)
