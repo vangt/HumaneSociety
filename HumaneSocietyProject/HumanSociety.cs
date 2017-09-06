@@ -327,7 +327,7 @@ namespace HumaneSocietyProject
                 Console.WriteLine("User was not found or password was incorrect.");
                 Console.ReadLine();
                 Console.Clear();
-                GetAdopteeLogin();
+                GetEmployee();
             }
         }
 
