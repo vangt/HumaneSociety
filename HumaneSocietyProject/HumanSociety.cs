@@ -718,7 +718,7 @@ namespace HumaneSocietyProject
 
             foreach(Room number in roomNumber)
             {
-                Console.WriteLine($"Room: {number.RoomNumber}");
+                Console.WriteLine($"Room: {number.RoomNumber} \t ID: {number.RoomID}");
             }
 
             try
@@ -745,19 +745,20 @@ namespace HumaneSocietyProject
             var number = from rooms in database.Rooms
                          where rooms.RoomNumber == roomNumber
                          select rooms;
-
-            if(number != null)
+            foreach (Room rooms in number)
             {
-                Console.WriteLine("That room is already taken.");
-                Console.ReadLine();
-                Console.Clear();
-                GetRoom();
+                if (rooms.RoomID == roomNumber)
+                {
+                    Console.WriteLine("That room is already taken.");
+                    Console.ReadLine();
+                    Console.Clear();
+                    GetRoom();
+                }
+                else
+                {
+                    roomNumber = room;
+                }
             }
-            else
-            {
-                roomNumber = room;
-            }
-
             return roomNumber;
         }
 
